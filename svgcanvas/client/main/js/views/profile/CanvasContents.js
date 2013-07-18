@@ -24,14 +24,26 @@ define( function( ) {
                 "click #decrease-speed-canvas":"minusSpeed" ,
                 "keyup #number-of-ball": "ballNumberDidChange"
             },
+
             run: function(){
+                this.speed = 50 ;
+                this.startLoop();
+            },
+            startLoop: function(){
                 var self = this;
                 setTimeout(function(){
+                    var milliseconds = new Date().getTime(), end_milliseconds=0;
                     for( var i=0; i<self.NUMBER_OF_MOVE; i++){
                         self.movearoundElement('circle-' + (self.NUMBER_OF_DRAW-(1 +i)), JUMP);
                     }
                     self.paintCanvas(); // update canvas
-                    self.run();
+                    setTimeout( function(){
+                        end_milliseconds = new Date().getTime();
+                        console.log("Time Taken to move element:: " + (end_milliseconds - milliseconds) + ' with speed:: ' + self.speed) ;
+                        self.startLoop();
+                    },0);
+
+
                 },self.speed);
 
                 this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
