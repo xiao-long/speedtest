@@ -85,9 +85,9 @@ define( function( ) {
             paintCanvas: function(sample){
                 var milliseconds = new Date().getTime(), end_milliseconds=0;
                 console.log("Start at :: " + milliseconds );
-
-                this.drawingTools[0].fn('circle-' + i);
-
+                for(var i=0;i<this.NUMBER_OF_DRAW; i++){
+                    this.drawingTools[0].fn('circle-' + i);
+                }
                 if(sample){
                     setTimeout( function(){
                         end_milliseconds = new Date().getTime();
