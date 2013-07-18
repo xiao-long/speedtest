@@ -35,7 +35,7 @@ define( function( ) {
                 },self.speed);
 
                 this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
-                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+                this.$("#decrease-speed-canvas").val('Decrease Speed ( ' + this.speed + ' ms )' );
             },
             paulse: function(){
                 this.speed = 10000000000;
@@ -45,14 +45,14 @@ define( function( ) {
                 this.speed -= 20;
                 if(this.speed<0) this.speed = 0;
                 this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
-                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+                this.$("#decrease-speed-canvas").val('Decrease Speed ( ' + this.speed + ' ms )' );
 
             },
             minusSpeed: function(){
                 this.speed += 20;
 
                 this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )');
-                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )');
+                this.$("#decrease-speed-canvas").val('Decrease Speed ( ' + this.speed + ' ms )');
             },
 
             ballNumberDidChange: function(){
