@@ -11,7 +11,8 @@ define( function( ) {
          * HomeMainPage (Entry View)
          *******************************************************************/
         var CANVAS_WIDTH = 1000,
-            CANVAS_HEIGHT = 600;
+            CANVAS_HEIGHT = 600,
+            JUMP = 20;
         sandbox.views.SvgContents = BaseBone.View.extend({
             id: 'scroller',
             currentDirections: {},
@@ -22,16 +23,21 @@ define( function( ) {
                 "click #run-canvas":"run",
                 "click #paulse-canvas":"paulse",
                 "click #increase-speed-canvas":"plusSpeed" ,
-                "click #decrease-speed-canvas":"minusSpeed"
+                "click #decrease-speed-canvas":"minusSpeed"  ,
+                "keyup #number-of-ball": "ballNumberDidChange"
 
             },
             run: function(){
-                this.speed = 50;
                 var self = this;
                 setTimeout(function(){
-                    self.movearound('circle-950', 10);
-                    self.movearound('circle-940', 10);
+                    for( var i=0; i<self.NUMBER_OF_MOVE; i++){
+                        self.movearoundElement('circle-' + (self.NUMBER_OF_DRAW-(1 +i)), JUMP);
+                    }
+                    self.run();
                 },self.speed);
+                this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+
             },
             paulse: function(){
                 this.speed = 10000000000;
@@ -40,17 +46,32 @@ define( function( ) {
 
                 this.speed -= 20;
                 if(this.speed<0) this.speed = 0;
-                console.log(this.speed);
+                this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+
             },
             minusSpeed: function(){
                 this.speed += 20;
-                console.log(this.speed);
+
+                this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )');
+                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )');
+            },
+            ballNumberDidChange: function(){
+
+                this.NUMBER_OF_MOVE = parseInt(this.$('#number-of-ball').val(), 10);
+                for( var i=0; i<this.NUMBER_OF_MOVE; i++){
+                    this.currentDirections[ 'circle-' + (this.NUMBER_OF_DRAW-(1 +i)) ] =  'e';
+                }
             },
 
             initialize: function(options){
                 var self = this;
                 this.NUMBER_OF_DRAW = 1000;
-                this.currentDirections = { 'circle-950':'e', 'circle-940':'e'};
+                this.NUMBER_OF_MOVE = 5;
+                this.currentDirections = {};
+                for( var i=0; i<this.NUMBER_OF_MOVE; i++){
+                    this.currentDirections[ 'circle-' + (this.NUMBER_OF_DRAW-(1 +i)) ] =  'e';
+                }
                 this.speed = 50;
                 this.jump = 50;
                 this.drawingTools = [
@@ -84,7 +105,6 @@ define( function( ) {
 
             paintCanvas: function(sample){
                 var milliseconds = new Date().getTime(), end_milliseconds=0;
-                console.log("Start at :: " + milliseconds );
                 for(var i=0;i<this.NUMBER_OF_DRAW; i++){
                     this.drawingTools[0].fn('circle-' + i);
                 }
@@ -98,30 +118,16 @@ define( function( ) {
 
             },
 
-            movearound:function(id, distance){
-                var milliseconds = new Date().getTime(), end_milliseconds=0;
-
-                var self = this;
-                setTimeout(function(){
-                    self.movearoundElement(id, 20);
-                },this.speed);
-
-                setTimeout( function(){
-                    end_milliseconds = new Date().getTime();
-                    console.log("Time Taken to move element:: " + (end_milliseconds - milliseconds) + ' with speed:: ' + self.speed) ;
-                },0);
-
-            },
             movearoundElement:function(id, distance){
                 var el = document.getElementById(id),
                     dir=this.currentDirections[id],
                     self = this,
                     x = parseInt(el.getAttribute('cx'), 10),
                     y = parseInt(el.getAttribute('cy'), 10);
-                //console.log( y );
+
                 dir = self.currentDirections[id] = this.getDirection(dir, x, y);
                 self.moveElement(el, dir, distance);
-                self.movearound(id, distance);
+
 
             },
             getDirection: function(currentDirection, x, y){
@@ -152,25 +158,11 @@ define( function( ) {
                 }
 
             },
-            moveCanvas: function(direction, distance){
-                var milliseconds = new Date().getTime(), end_milliseconds=0;
-                console.log("Start at :: " + milliseconds );
-                var el = null;
-                for(var i=0;i<1; /*this.NUMBER_OF_DRAW*/ i++){
-                    el = document.getElementById('circle-' + i);
-                    this.moveElement(el, direction, 50);
-                }
-                setTimeout( function(){
-                    end_milliseconds = new Date().getTime();
-                    console.log("End at :: " + end_milliseconds );
-                    console.log("Total :: " + (end_milliseconds - milliseconds));
-                    alert( "Total :: " + (end_milliseconds - milliseconds) );
-                },0);
-            },
+
             moveElement: function(el, direction, distance){
                 distance = parseInt(distance,10);
 
-                //el.setAttribute('fill','#fff');
+                el.setAttribute('fill','#fff');
                 switch(direction){
                     case 'n':{
                         var y = parseInt(el.getAttribute('cy'),10);
@@ -191,6 +183,8 @@ define( function( ) {
                 }
             } ,
             redrawCanvas: function(){
+                var canvas = document.getElementById('svg-panel');
+                $("#svg-panel").empty();
 
                 this.paintCanvas(true);
                 //this.moveCanvas('e',50);

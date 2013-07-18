@@ -11,7 +11,8 @@ define( function( ) {
          * HomeMainPage (Entry View)
          *******************************************************************/
         var CANVAS_WIDTH = 1000,
-            CANVAS_HEIGHT = 600;
+            CANVAS_HEIGHT = 600,
+            JUMP = 20;
         sandbox.views.CanvasContents = BaseBone.View.extend({
             id: 'scroller',
             
@@ -20,16 +21,21 @@ define( function( ) {
                 "click #run-canvas":"run",
                 "click #paulse-canvas":"paulse",
                 "click #increase-speed-canvas":"plusSpeed" ,
-                "click #decrease-speed-canvas":"minusSpeed"
-
+                "click #decrease-speed-canvas":"minusSpeed" ,
+                "keyup #number-of-ball": "ballNumberDidChange"
             },
             run: function(){
-                this.speed = 50;
                 var self = this;
                 setTimeout(function(){
-                    self.movearound('circle-950', 10);
-                    self.movearound('circle-940', 10);
+                    for( var i=0; i<self.NUMBER_OF_MOVE; i++){
+                        self.movearoundElement('circle-' + (self.NUMBER_OF_DRAW-(1 +i)), JUMP);
+                    }
+                    self.paintCanvas(); // update canvas
+                    self.run();
                 },self.speed);
+
+                this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
             },
             paulse: function(){
                 this.speed = 10000000000;
@@ -38,19 +44,41 @@ define( function( ) {
 
                 this.speed -= 20;
                 if(this.speed<0) this.speed = 0;
-                console.log(this.speed);
+                this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )' );
+
             },
             minusSpeed: function(){
                 this.speed += 20;
-                console.log(this.speed);
+
+                this.$("#increase-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )');
+                this.$("#decrease-speed-canvas").val('Increase Speed ( ' + this.speed + ' ms )');
             },
 
+            ballNumberDidChange: function(){
+
+                this.NUMBER_OF_MOVE = parseInt(this.$('#number-of-ball').val(), 10);
+                for( var i=0; i<this.NUMBER_OF_MOVE; i++){
+                    this.currentDirections[ 'circle-' + (this.NUMBER_OF_DRAW-(1 +i)) ] =  'e';
+                    this.locations[ 'circle-' + (this.NUMBER_OF_DRAW-(1 +i)) ].color =  '#fff';
+                }
+            },
 
             initialize: function(options){
                 var self = this;
                 this.NUMBER_OF_DRAW = 1000;
-                this.currentDirections = { 'circle-950':'e', 'circle-940':'e'};
-                this.locations = { 'circle-950': {x:30,y:100, color:'#fff'}, 'circle-940': {x:430,y:400,color:'#fff'} };
+                this.NUMBER_OF_MOVE = 5;
+                this.currentDirections = {};
+                this.locations = {};
+                for( var i=0; i<this.NUMBER_OF_MOVE; i++){
+                    this.currentDirections[ 'circle-' + (this.NUMBER_OF_DRAW-(1 +i)) ] =  'e';
+                    this.locations[ 'circle-' + (this.NUMBER_OF_DRAW-(1 +i)) ] = {
+                            x:parseInt(self.getRandomInt(20, CANVAS_WIDTH-20),10),
+                            y:parseInt(self.getRandomInt(20, CANVAS_WIDTH-20),10),
+                            color:'#fff'
+                    };
+                }
+
                 this.speed = 50;
                 this.jump = 50;
 
@@ -107,7 +135,7 @@ define( function( ) {
 
             },
 
-
+            /*
             movearound:function(id, distance){
                 var milliseconds = new Date().getTime(), end_milliseconds=0;
 
@@ -122,6 +150,7 @@ define( function( ) {
                 },0);
 
             },
+            */
             movearoundElement:function(id, distance){
                 var dir=this.currentDirections[id],
                     self = this,
@@ -130,7 +159,7 @@ define( function( ) {
 
                 dir = self.currentDirections[id] = this.getDirection(dir, x, y);
                 self.moveElement( id,  dir, distance);
-                self.movearound(id, distance);
+
 
             },
             getDirection: function(currentDirection, x, y){
@@ -170,7 +199,7 @@ define( function( ) {
             },
             moveElement: function(id, direction, distance){
                 distance = parseInt(distance,10);
-                console.log( id );
+                //console.log( id );
                 //el.setAttribute('fill','#fff');
                 switch(direction){
                     case 'n':{
@@ -189,7 +218,7 @@ define( function( ) {
                         this.locations[id].x = this.locations[id].x - distance;
                     }break;
                 }
-                this.paintCanvas();
+
             } ,
 
 
