@@ -79,105 +79,6 @@ define( function( ) {
                                 ctx.fill();
                             }
                         }
-                    },
-                    {
-                        name:"face",
-                        fn:function(){
-                            var canvas = document.getElementById('canvas');
-                            if (canvas.getContext){
-                                var ctx = canvas.getContext('2d');
-
-                                ctx.beginPath();
-                                ctx.arc(75,75,50,0,Math.PI*2,true); // Outer circle
-                                ctx.moveTo(110,75);
-                                ctx.arc(75,75,35,0,Math.PI,false);   // Mouth (clockwise)
-                                ctx.moveTo(65,65);
-                                ctx.arc(60,65,5,0,Math.PI*2,true);  // Left eye
-                                ctx.moveTo(95,65);
-                                ctx.arc(90,65,5,0,Math.PI*2,true);  // Right eye
-                                ctx.stroke();
-                            }
-                        }
-                    },
-                    {
-                        name:"line",
-                        fn:function(){
-                            var canvas = document.getElementById('canvas');
-                            if (canvas.getContext){
-                                var ctx = canvas.getContext('2d');
-
-                                // Filled triangle
-                                ctx.beginPath();
-                                ctx.moveTo(25,25);
-                                ctx.lineTo(105,25);
-                                ctx.lineTo(25,105);
-                                ctx.fill();
-
-                                // Stroked triangle
-                                ctx.beginPath();
-                                ctx.moveTo(125,125);
-                                ctx.lineTo(125,45);
-                                ctx.lineTo(45,125);
-                                ctx.closePath();
-                                ctx.stroke();
-                                ctx.fillStyle = '#' + self.getRandomInt(100000, 999999);
-                                ctx.fill();
-                            }
-                        }
-                    },
-                    {
-                        name:"bubble",
-                        fn:function(){
-                            var canvas = document.getElementById('canvas');
-                            if (canvas.getContext) {
-                                var ctx = canvas.getContext('2d');
-
-                                var p1=75, p2=50,p3=100;
-                                p1 =  self.getRandomInt(10, 500);
-                                p2 =  self.getRandomInt(10, 500);
-                                p3 =  self.getRandomInt(10, 500);
-
-                                // Quadratric curves example
-                                ctx.beginPath();
-                                ctx.moveTo(p1,p2);
-                                ctx.quadraticCurveTo(25,25,25,62.5);
-                                ctx.quadraticCurveTo(25,100,50,100);
-                                ctx.quadraticCurveTo(50,120,30,125);
-                                ctx.quadraticCurveTo(60,120,65,100);
-                                ctx.quadraticCurveTo(125,100,125,62.5);
-                                ctx.quadraticCurveTo(125,25,75,25);
-                                ctx.stroke();
-                                ctx.fillStyle = '#' + self.getRandomInt(100000, 999999);
-                                ctx.fill();
-                            }
-                        }
-                    },
-                    {
-                        name: "heart",
-                        fn: function(){
-                            var canvas = document.getElementById('canvas');
-                            if (canvas.getContext){
-                                var ctx = canvas.getContext('2d');
-
-                                var p1=75, p2=50,p3=100;
-                                p1 =  self.getRandomInt(10, 500);
-                                p2 =  self.getRandomInt(10, 500);
-                                p3 =  self.getRandomInt(10, 500);
-
-                                // Quadratric curves example
-                                ctx.beginPath();
-                                ctx.moveTo(p1,p2);
-
-                                ctx.bezierCurveTo(75,37,70,25,50,25);
-                                ctx.bezierCurveTo(20,25,20,62.5,20,62.5);
-                                ctx.bezierCurveTo(20,80,40,102,75,120);
-                                ctx.bezierCurveTo(110,102,130,80,130,62.5);
-                                ctx.bezierCurveTo(130,62.5,130,25,100,25);
-                                ctx.bezierCurveTo(85,25,75,37,75,40);
-                                ctx.fillStyle = '#' + self.getRandomInt(100000, 999999);
-                                ctx.fill();
-                            }
-                        }
                     }
 
                 ]
@@ -190,14 +91,11 @@ define( function( ) {
             getRandomInt : function(min, max) {
                 return Math.floor(Math.random() * (max - min + 1)) + min;
             },
-            pintCanvas: function(sample){
+            paintCanvas: function(sample){
                 var milliseconds = new Date().getTime(), end_milliseconds=0;
-                for(var i=0;i<this.NUMBER_OF_DRAW; i++){
 
-                    idx = this.getRandomInt(0, 4);
-                    idx = 0;
-                    this.drawingTools[idx].fn('circle-' + i);
-                }
+                this.drawingTools[0].fn('circle-' + i);
+
                 if( sample ){
                     setTimeout( function(){
                         end_milliseconds = new Date().getTime();
@@ -290,13 +188,13 @@ define( function( ) {
                         this.locations[id].x = this.locations[id].x - distance;
                     }break;
                 }
-                this.pintCanvas();
+                this.paintCanvas();
             } ,
 
 
             redrawCanvas: function(){
 
-                this.pintCanvas(true);
+                this.paintCanvas(true);
             },
             
             render: function(){
